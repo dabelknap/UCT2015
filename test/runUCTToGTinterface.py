@@ -28,7 +28,8 @@ options.parseArguments()
 
 process.source = cms.Source ("PoolSource",
                              fileNames = cms.untracked.vstring(
-"/store/mc/Fall13dr/Neutrino_Pt-2to20_gun/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/00005/6AF2C1E2-DF7F-E311-B452-003048679162.root",
+"file:/scratch/ojalvo/neutrinoGun.root"
+#"/store/mc/Fall13dr/Neutrino_Pt-2to20_gun/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/00005/6AF2C1E2-DF7F-E311-B452-003048679162.root",
                              )   
                              )
 

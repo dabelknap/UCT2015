@@ -26,6 +26,18 @@ hackHCALMIPs = cms.EDProducer(
     cutOnRawBits = cms.bool(False), # What to cut on
 )
 
+Layer1Digis = cms.EDProducer(
+    "Layer1Emulator",
+    hcalDigis = cms.InputTag("hackHCALMIPs"),
+    #ecalDigis = cms.InputTag("ecalDigis"),
+    ecalDigis = cms.InputTag("ecalDigis:EcalTriggerPrimitives"),
+#    threshold = cms.double(3), # In GeV
+#    rawThreshold = cms.uint32(3), # In TPG rank
+#    cutOnRawBits = cms.bool(False), # What to cut on
+    debug = cms.bool(False),
+)
+
+
 uctDigis = cms.EDProducer(
     "L1RCTProducer",
     #hcalDigis = cms.VInputTag(cms.InputTag("hcalDigis")),
@@ -88,9 +100,9 @@ uctDigiStep = cms.Sequence(
 uctEmulatorStep = cms.Sequence(
     hackHCALMIPs
     # Now make UCT and L1 objects
-    * uctDigis
-    * CorrectedDigis 
-    * UCT2015Producer    
+#    * uctDigis
+#    * CorrectedDigis 
+#    * UCT2015Producer    
 )
 
-emulationSequence = cms.Sequence(uctDigiStep * uctEmulatorStep)
+emulationSequence = cms.Sequence(uctDigiStep * uctEmulatorStep + Layer1Digis)
