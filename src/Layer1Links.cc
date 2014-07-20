@@ -182,3 +182,26 @@ Layer1Links::populate_link() {
     }
   }
 }
+
+
+void
+Layer1Links::write_to_file(std::ofstream& outfile) {
+  if (!outfile.is_open()) {
+    throw std::runtime_error("File is not open");
+  }
+
+  outfile << "run: " << run << "lumi: " << lumi << "event: " << event << std::endl;
+
+  for (int i = 0; i < 72; i++) {
+    outfile << "Link " << std::setw(2) << i << ": ";
+    for (int j = 0; j < 40; ++j) {
+      uint32_t out = 0;
+      for (int k = 0; k < 4; ++k) {
+        out <<= 4;
+        out |= links[i][j][k];
+      }
+      outfile << std::setw(8) << std::hex << (long int)(out) <<  " ";
+    }
+    outfile << std::dec << std::endl;
+  }
+}
