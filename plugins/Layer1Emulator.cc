@@ -64,6 +64,7 @@ Layer1Emulator::produce(edm::Event& evt, const edm::EventSetup& es) {
   edm::Handle<HcalTrigPrimDigiCollection> hcalTpgs;
   std::auto_ptr<HcalTrigPrimDigiCollection> output(new HcalTrigPrimDigiCollection);
 
+  Layer1Links layer1links(evt.id().event(), evt.id().luminosityBlock(), evt.id().run());
 
   if(evt.getByLabel(hcalDigis_, hcalTpgs)){
     output->reserve(hcalTpgs->size());
@@ -80,6 +81,8 @@ Layer1Emulator::produce(edm::Event& evt, const edm::EventSetup& es) {
       ///if (debug_) {
       //std::cout << ieta << " " << energy << std::endl;
       //}
+
+      layer1links.add_hcal_tower(ieta, iphi, tpg.SOI_compressedEt(), 0);
 
       if(debug_)
 	if(tpg.SOI_compressedEt()>20)
@@ -102,6 +105,8 @@ Layer1Emulator::produce(edm::Event& evt, const edm::EventSetup& es) {
       bool fineGrain = tpg.fineGrain();
       short zside = tpg.id().zside();
 
+      layer1links.add_ecal_tower(ieta, iphi, tpg.compressedEt(), fineGrain);
+
       // Get the real energy
       //double energy = hcalScale->et(tpg.SOI_compressedEt(), ieta, zside);
 
@@ -116,6 +121,8 @@ Layer1Emulator::produce(edm::Event& evt, const edm::EventSetup& es) {
     }
   }
   evt.put(output);
+
+  layer1links.write_to_file(outfile);
 }
 
 

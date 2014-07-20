@@ -161,6 +161,7 @@ Layer1Links::add_hcal_tower(short iEta, short iPhi, int E, bool fg) {
 
 void
 Layer1Links::populate_link() {
+  populate_link();
   for (int i = 0; i < 72; ++i) {
     for (int j = 0; j < 40; ++j) {
       for (int k = 0; k < 2; ++k) {

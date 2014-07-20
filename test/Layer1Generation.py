@@ -21,7 +21,7 @@ process.source = cms.Source ("PoolSource",
                              )
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1)
+    input = cms.untracked.int32(2)
 )
 
 # Tested on Monte Carlo, for a test with data edit ahead
