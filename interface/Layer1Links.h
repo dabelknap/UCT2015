@@ -54,7 +54,8 @@ class Layer1Links {
     Layer1Links(unsigned int event, unsigned int lumi, unsigned int run);
     ~Layer1Links() { }
 
-    void add_tower();
+    void add_ecal_tower(short ieta, short iphi, int E, bool fg);
+    void add_hcal_tower(short ieta, short iphi, int E, bool fg);
 
     void write_to_file(std::ofstream& outfile);
 };

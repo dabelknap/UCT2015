@@ -124,7 +124,7 @@ Layer1Links::Layer1Links(unsigned int Event, unsigned int Lumi,
     for (int j = 0; j < 40; j++) {
 
       short iphi = i/2;
-      short ieta = i * (i % 2 == 0 ? 1 : -1);
+      short ieta = (i + 1) * (i % 2 == 0 ? 1 : -1);
 
       trigger_towers[i][j][0] = TriggerTower(ieta, iphi);
       trigger_towers[i][j][1] = TriggerTower(ieta, iphi+1);
@@ -134,5 +134,26 @@ Layer1Links::Layer1Links(unsigned int Event, unsigned int Lumi,
 
 
 void
-Layer1Links::add_tower() {
+Layer1Links::add_ecal_tower(short iEta, short iPhi, int E, bool fg) {
+  short link = (iEta < 0 ? 2*(iPhi/2)+1 : 2*(iPhi/2));
+
+  short tower = (iPhi % 2 == 0 ? 0 : 1);
+
+  short ieta = iEta * (iEta > 0 ? 1 : -1);
+
+  trigger_towers[link][ieta-1][tower].set_ecal_energy(E);
+  trigger_towers[link][ieta-1][tower].set_ecal_fg(E);
+}
+
+
+void
+Layer1Links::add_hcal_tower(short iEta, short iPhi, int E, bool fg) {
+  short link = (iEta < 0 ? 2*(iPhi/2)+1 : 2*(iPhi/2));
+
+  short tower = (iPhi % 2 == 0 ? 0 : 1);
+
+  short ieta = iEta * (iEta > 0 ? 1 : -1);
+
+  trigger_towers[link][ieta-1][tower].set_hcal_energy(E);
+  trigger_towers[link][ieta-1][tower].set_hcal_fg(E);
 }
