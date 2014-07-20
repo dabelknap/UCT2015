@@ -157,3 +157,28 @@ Layer1Links::add_hcal_tower(short iEta, short iPhi, int E, bool fg) {
   trigger_towers[link][ieta-1][tower].set_hcal_energy(E);
   trigger_towers[link][ieta-1][tower].set_hcal_fg(E);
 }
+
+
+void
+Layer1Links::populate_link() {
+  for (int i = 0; i < 72; ++i) {
+    for (int j = 0; j < 40; ++j) {
+      for (int k = 0; k < 2; ++k) {
+        uint8_t byte0 = 0;
+        uint8_t byte1 = 0;
+        uint8_t byte2 = 0;
+        uint8_t byte3 = 0;
+
+        byte0 = (uint8_t)(trigger_towers[i][j][0].output_word() & 0xff);
+        byte1 = (uint8_t)((trigger_towers[i][j][0].output_word() & 0xff00) >> 8);
+        byte2 = (uint8_t)(trigger_towers[i][j][1].output_word() & 0xff);
+        byte3 = (uint8_t)((trigger_towers[i][j][1].output_word() & 0xff00) >> 8);
+
+        links[i][j][3] = byte0;
+        links[i][j][2] = byte1;
+        links[i][j][1] = byte2;
+        links[i][j][0] = byte3;
+      }
+    }
+  }
+}

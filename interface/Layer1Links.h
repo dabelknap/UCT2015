@@ -57,6 +57,8 @@ class Layer1Links {
     void add_ecal_tower(short ieta, short iphi, int E, bool fg);
     void add_hcal_tower(short ieta, short iphi, int E, bool fg);
 
+    void populate_link();
+
     void write_to_file(std::ofstream& outfile);
 };
 
