@@ -3,7 +3,7 @@
 
 Emulate the L1 and UCT upgrade primitives, and put them in the event.
 
-Authors: Isobel Ojalvo, Sridhara Dasu (kludger)
+Authors: Isobel Ojalvo, Sridhara Dasu, and others from UW
 
 '''
 

@@ -3,7 +3,7 @@
 Creates L1ExtraNtuples (L1 Style) using a UCT->GT jump
 
 Authors: L. Dodd, N. Woods, T. Perry, A. Levine,, S. Dasu, M. Cepeda, E. Friis (UW Madison)
-
+         I. Ojalvo, D. Belknap
 '''
 
 import FWCore.ParameterSet.Config as cms
@@ -12,24 +12,11 @@ import os
 from FWCore.ParameterSet.VarParsing import VarParsing
 process = cms.Process("ReRunningL1")
 
-# Get command line options
-from FWCore.ParameterSet.VarParsing import VarParsing
-options = VarParsing ('analysis')
-
-options.register(
-    'isMC',
-    1,
-    VarParsing.multiplicity.singleton,
-    VarParsing.varType.int,
-    'Set to 1 for simulated samples - updates GT, emulates HCAL TPGs.')
-
-options.parseArguments()
-
 
 process.source = cms.Source ("PoolSource",
                              fileNames = cms.untracked.vstring(
-"file:/scratch/ojalvo/neutrinoGun.root"
-#"/store/mc/Fall13dr/Neutrino_Pt-2to20_gun/GEN-SIM-RAW/tsg_PU40bx25_POSTLS162_V2-v1/00005/6AF2C1E2-DF7F-E311-B452-003048679162.root",
+        "/store/user/ldodd/TT_Tune4C_13TeV-pythia8-tauola/TT_Tune4C_13TeV-pythia8-tauola-tsg_PU40bx25_POSTLS162_V2-v1/fb508503c16d6e4b02bc25104d11f7c2/skim_103_1_yUh.root"
+#"file:/scratch/ojalvo/neutrinoGun.root"
                              )   
                              )
 
@@ -42,20 +29,14 @@ process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
 process.GlobalTag.globaltag = 'POSTLS161_V12::All'
 
 # Load emulation and RECO sequences
-if not options.isMC:
-    process.load("L1Trigger.UCT2015.emulation_cfi")
-    print "Running on data!"     
-else:
-    process.load("L1Trigger.UCT2015.emulationMC_cfi")
+process.load("L1Trigger.UCT2015.emulationLayer2MC_cfi")
 
 # Load sequences
 process.load("Configuration.Geometry.GeometryIdeal_cff")
-process.load("L1Trigger.UCT2015.uctl1extraparticles_cfi")
+#process.load("L1Trigger.UCT2015.uctl1extraparticles_cfi")
 
 process.p1 = cms.Path(
-    process.emulationSequence *
-    process.uct2015L1Extra
-       #  *process.YourFavoritePlottingRoutine  --> This ends at l1extra production, anything after is up to the analyst 
+    process.emulationSequence 
 )
 
 # Make the framework shut up.
@@ -63,7 +44,7 @@ process.p1 = cms.Path(
 #process.MessageLogger.cerr.FwkReport.reportEvery = 100
 #process.MessageLogger.cerr.threshold = cms.untracked.string('DEBUG')
 
-# Output definition
+# Output definition (This isn't used yet!!! Just a place holder)
 process.output = cms.OutputModule("PoolOutputModule",
     fileName = cms.untracked.string('out.root'),
     outputCommands = cms.untracked.vstring('drop *',
