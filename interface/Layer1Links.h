@@ -26,6 +26,7 @@ class TriggerTower {
 
   public:
     TriggerTower(short iEta, short iPhi);
+    TriggerTower() { };
     ~TriggerTower() { };
 
     void set_ecal_fg(bool fg);
@@ -42,7 +43,7 @@ class Layer1Links {
   private:
     uint8_t links[72][40][4];
 
-    //TriggerTower trigger_towers[71][40][2];
+    TriggerTower trigger_towers[72][40][2];
 
     unsigned int event;
     unsigned int lumi;

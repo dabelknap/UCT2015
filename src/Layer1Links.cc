@@ -117,24 +117,19 @@ Layer1Links::Layer1Links(unsigned int Event, unsigned int Lumi,
   event = Event;
   lumi = Lumi;
   run = Run;
-/*
+
+  // link number
   for (int i = 0; i < 72; i++) {
+    // abs|ieta|
     for (int j = 0; j < 40; j++) {
-      for (int k = 0; k < 2; k++) {
 
-        if (i % 2 == 0) {
-          short ieta = (j + 1);
-        else {
-          short ieta = -(j + 1);
-        }
+      short iphi = i/2;
+      short ieta = i * (i % 2 == 0 ? 1 : -1);
 
-        short iphi = (short)i
-
-        trigger_towers[i][j][k] = TriggerTower(ieta, iphi);
-      }
+      trigger_towers[i][j][0] = TriggerTower(ieta, iphi);
+      trigger_towers[i][j][1] = TriggerTower(ieta, iphi+1);
     }
   }
-  */
 }
 
 
