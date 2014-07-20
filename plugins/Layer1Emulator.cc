@@ -24,6 +24,8 @@
 #include "CondFormats/L1TObjects/interface/L1CaloHcalScale.h"
 #include "CondFormats/DataRecord/interface/L1CaloHcalScaleRcd.h"
 
+#include "L1Trigger/UCT2015/interface/Layer1Links.h"
+
 class Layer1Emulator : public edm::EDProducer {
   public:
     Layer1Emulator(const edm::ParameterSet& pset);
