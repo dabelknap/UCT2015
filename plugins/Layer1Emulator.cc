@@ -81,12 +81,13 @@ Layer1Emulator::produce(edm::Event& evt, const edm::EventSetup& es) {
       ///if (debug_) {
       //std::cout << ieta << " " << energy << std::endl;
       //}
+      int energy = tpg.SOI_compressedEt();
 
-      layer1links.add_hcal_tower(ieta, iphi, tpg.SOI_compressedEt(), 0);
+      layer1links.add_hcal_tower(ieta, iphi, energy, 0);
 
       if(debug_)
-	if(tpg.SOI_compressedEt()>20)
-	  std::cout << "Layer 1 HCAL et: " << tpg.SOI_compressedEt() << " eta: " << ieta << " iphi: " << iphi  << std::endl;
+	if(energy>20)
+	  std::cout << "Layer 1 HCAL et: " << energy << " eta: " << ieta << " iphi: " << iphi  << std::endl;
       
       HcalTriggerPrimitiveSample new_t0(tpg.t0().raw() | 0x100);
       tpg.setSample(tpg.presamples(), new_t0);

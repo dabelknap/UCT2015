@@ -9,10 +9,13 @@
 #include <string>
 #include <cstdlib>
 #include <stdexcept>
+#include <sstream>
 
 
 class TriggerTower {
+
   private:
+
     short ieta;
     short iphi;
     bool ecal_fg;
@@ -27,6 +30,7 @@ class TriggerTower {
     
 
   public:
+
     TriggerTower(short iEta, short iPhi);
     TriggerTower() { };
     ~TriggerTower() { };
@@ -42,7 +46,9 @@ class TriggerTower {
 
 
 class Layer1Links {
+
   private:
+
     uint8_t links[72][40][4];
 
     TriggerTower trigger_towers[72][40][2];
@@ -53,13 +59,14 @@ class Layer1Links {
 
 
   public:
+
     Layer1Links(unsigned int event, unsigned int lumi, unsigned int run);
-    ~Layer1Links() { }
+    ~Layer1Links() { };
 
     void add_ecal_tower(short ieta, short iphi, int E, bool fg);
     void add_hcal_tower(short ieta, short iphi, int E, bool fg);
 
-    void populate_link();
+    void populate_links();
 
     void write_to_file(std::ofstream& outfile);
 };

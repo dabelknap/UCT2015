@@ -123,8 +123,14 @@ Layer1Links::Layer1Links(unsigned int Event, unsigned int Lumi,
     // abs|ieta|
     for (int j = 0; j < 40; j++) {
 
-      short iphi = i/2;
-      short ieta = (i + 1) * (i % 2 == 0 ? 1 : -1);
+      short iphi = i/2+1;
+      short ieta = (j + 1) * (i % 2 == 0 ? 1 : -1);
+
+      if (1 > iphi || iphi > 72 || 1 > (j+1) || (j+1) > 41) {
+        std::stringstream ss;
+        ss << "Layer1Links Constructor  iphi: " << iphi << ", |ieta|: " << (j+1);
+        throw std::invalid_argument(ss.str());
+      }
 
       trigger_towers[i][j][0] = TriggerTower(ieta, iphi);
       trigger_towers[i][j][1] = TriggerTower(ieta, iphi+1);
@@ -135,11 +141,18 @@ Layer1Links::Layer1Links(unsigned int Event, unsigned int Lumi,
 
 void
 Layer1Links::add_ecal_tower(short iEta, short iPhi, int E, bool fg) {
-  short link = (iEta < 0 ? 2*(iPhi/2)+1 : 2*(iPhi/2));
+  short link = (iEta < 0 ? 2*((iPhi-1)/2)+1 : 2*((iPhi-1)/2));
 
   short tower = (iPhi % 2 == 0 ? 0 : 1);
 
   short ieta = iEta * (iEta > 0 ? 1 : -1);
+
+  if (0 > link || link > 71 || 0 > (ieta-1) || (ieta-1) > 39 || 0 > tower || tower > 1) {
+      std::stringstream ss;
+      ss << "link: " << link << ", ieta-1: " << (ieta-1) << ", tower: " << tower;
+      throw std::invalid_argument(ss.str());
+  }
+  std::cout << "link: " << link << ", ieta-1: " << (ieta-1) << ", tower: " << tower << std::endl;
 
   trigger_towers[link][ieta-1][tower].set_ecal_energy(E);
   trigger_towers[link][ieta-1][tower].set_ecal_fg(E);
@@ -148,11 +161,17 @@ Layer1Links::add_ecal_tower(short iEta, short iPhi, int E, bool fg) {
 
 void
 Layer1Links::add_hcal_tower(short iEta, short iPhi, int E, bool fg) {
-  short link = (iEta < 0 ? 2*(iPhi/2)+1 : 2*(iPhi/2));
+  short link = (iEta < 0 ? 2*((iPhi-1)/2)+1 : 2*((iPhi-1)/2));
 
   short tower = (iPhi % 2 == 0 ? 0 : 1);
 
   short ieta = iEta * (iEta > 0 ? 1 : -1);
+
+  if (0 > link || link > 71 || 0 > (ieta-1) || (ieta-1) > 39 || 0 > tower || tower > 1) {
+      std::stringstream ss;
+      ss << "link: " << link << ", ieta-1: " << (ieta-1) << ", tower: " << tower;
+      throw std::invalid_argument(ss.str());
+  }
 
   trigger_towers[link][ieta-1][tower].set_hcal_energy(E);
   trigger_towers[link][ieta-1][tower].set_hcal_fg(E);
@@ -160,26 +179,23 @@ Layer1Links::add_hcal_tower(short iEta, short iPhi, int E, bool fg) {
 
 
 void
-Layer1Links::populate_link() {
-  populate_link();
+Layer1Links::populate_links() {
   for (int i = 0; i < 72; ++i) {
     for (int j = 0; j < 40; ++j) {
-      for (int k = 0; k < 2; ++k) {
-        uint8_t byte0 = 0;
-        uint8_t byte1 = 0;
-        uint8_t byte2 = 0;
-        uint8_t byte3 = 0;
+      uint8_t byte0 = 0;
+      uint8_t byte1 = 0;
+      uint8_t byte2 = 0;
+      uint8_t byte3 = 0;
 
-        byte0 = (uint8_t)(trigger_towers[i][j][0].output_word() & 0xff);
-        byte1 = (uint8_t)((trigger_towers[i][j][0].output_word() & 0xff00) >> 8);
-        byte2 = (uint8_t)(trigger_towers[i][j][1].output_word() & 0xff);
-        byte3 = (uint8_t)((trigger_towers[i][j][1].output_word() & 0xff00) >> 8);
+      byte0 = (uint8_t)( trigger_towers[i][j][0].output_word() & 0x00ff);
+      byte1 = (uint8_t)((trigger_towers[i][j][0].output_word() & 0xff00) >> 8);
+      byte2 = (uint8_t)( trigger_towers[i][j][1].output_word() & 0x00ff);
+      byte3 = (uint8_t)((trigger_towers[i][j][1].output_word() & 0xff00) >> 8);
 
-        links[i][j][3] = byte0;
-        links[i][j][2] = byte1;
-        links[i][j][1] = byte2;
-        links[i][j][0] = byte3;
-      }
+      links[i][j][3] = byte0;
+      links[i][j][2] = byte1;
+      links[i][j][1] = byte2;
+      links[i][j][0] = byte3;
     }
   }
 }
@@ -190,19 +206,21 @@ Layer1Links::write_to_file(std::ofstream& outfile) {
   if (!outfile.is_open()) {
     throw std::runtime_error("File is not open");
   }
+  populate_links();
 
-  outfile << "run: " << run << "lumi: " << lumi << "event: " << event << std::endl;
+  outfile << "run: " << run << " lumi: " << lumi << " event: " << event << std::endl;
 
   for (int i = 0; i < 72; i++) {
-    outfile << "Link " << std::setw(2) << i << ": ";
+    outfile << "Link " << std::uppercase << std::setfill('0') << std::setw(2) << i << ": ";
     for (int j = 0; j < 40; ++j) {
       uint32_t out = 0;
       for (int k = 0; k < 4; ++k) {
-        out <<= 4;
+        out <<= 8;
         out |= links[i][j][k];
       }
       outfile << std::setw(8) << std::hex << (long int)(out) <<  " ";
     }
     outfile << std::dec << std::endl;
   }
+  outfile << std::endl;
 }
