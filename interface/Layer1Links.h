@@ -1,3 +1,16 @@
+/**
+ * Filename: Layer1Links.h
+ *
+ * Description: Two classes are defined here. The TriggerTower class contains
+ *              eta/phi and energy information of a single trigger tower, and
+ *              can compute the values produced by Layer1 (CTP7). Layer1Links
+ *              contains the collection of all trigger towers, and has methods
+ *              for inputing ECAL/HCAL trigger primitive data, and outputing the
+ *              CTP7 link data to a text file.
+ *
+ * Author: D. Austin Belknap, UW-Madison
+ */
+
 #ifndef _LAYER1LINKS_h
 #define _LAYER1LINKS_h
 
@@ -12,6 +25,10 @@
 #include <sstream>
 
 
+/**
+ * This class contains the trigger tower data relevant to the output of Layer1.
+ * (CTP7 board).
+ */
 class TriggerTower {
 
   private:
@@ -45,6 +62,12 @@ class TriggerTower {
 };
 
 
+/**
+ * This class contains a collection of all trigger towers, and all of the Layer1
+ * output links. It can accept ECAL/HCAL trigger primitives, and can convert
+ * them into the form output by the CTP7. It contains a method for writing the
+ * CTP7 output patterns to a text file.
+ */
 class Layer1Links {
 
   private:

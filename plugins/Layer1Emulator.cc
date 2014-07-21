@@ -64,6 +64,7 @@ Layer1Emulator::produce(edm::Event& evt, const edm::EventSetup& es) {
   edm::Handle<HcalTrigPrimDigiCollection> hcalTpgs;
   std::auto_ptr<HcalTrigPrimDigiCollection> output(new HcalTrigPrimDigiCollection);
 
+  // Initialize layer1links object w/ event ID
   Layer1Links layer1links(evt.id().event(), evt.id().luminosityBlock(), evt.id().run());
 
   if(evt.getByLabel(hcalDigis_, hcalTpgs)){
